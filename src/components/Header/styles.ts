@@ -11,6 +11,7 @@ export const Container = styled.div`
   div {
     padding: 10px 20px;
     border: 1px solid #d1d1d1;
+    border-left: none;
     flex: 1;
     text-align: center;
     font-weight: 700;
