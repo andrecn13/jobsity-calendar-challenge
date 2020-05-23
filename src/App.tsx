@@ -1,10 +1,14 @@
 import React from 'react';
 
+import Topbar from './components/Topbar';
+import Header from './components/Header';
+
 import GlobalStyle from './styles/global';
 
 const App: React.FC = () => (
   <>
-    <h1>Hello World</h1>
+    <Topbar />
+    <Header />
     <GlobalStyle />
   </>
 );

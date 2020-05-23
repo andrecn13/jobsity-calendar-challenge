@@ -11,9 +11,14 @@ export default createGlobalStyle`
   body {
     background-color: #fafaf5;
     -webkit-font-smoothing: antialiased;
+    color: #343438;
   }
 
   body, input, button {
     font: 16px Roboto, sans-serif
+  }
+
+  button {
+    cursor: pointer;
   }
 `;

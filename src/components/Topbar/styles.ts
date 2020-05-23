@@ -1,0 +1,33 @@
+import styled from 'styled-components';
+import { shade } from 'polished';
+
+export const Container = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+
+  button {
+    background-color: #fff;
+    border: 1px solid #d1d1d1;
+    border-radius: 50%;
+    box-shadow: none;
+    padding: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: ${shade(0.05, '#FFF')};
+    }
+
+    svg {
+      color: #1f1deb;
+    }
+  }
+
+  div > strong {
+    font-size: 1.4em;
+  }
+`;
