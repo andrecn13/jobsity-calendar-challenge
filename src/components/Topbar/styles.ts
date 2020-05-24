@@ -18,6 +18,10 @@ export const Container = styled.div`
     justify-content: center;
     align-items: center;
 
+    & + button {
+      margin-left: 10px;
+    }
+
     &:hover {
       background-color: ${shade(0.05, '#FFF')};
     }
@@ -25,6 +29,12 @@ export const Container = styled.div`
     svg {
       color: #1f1deb;
     }
+  }
+
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   div > strong {

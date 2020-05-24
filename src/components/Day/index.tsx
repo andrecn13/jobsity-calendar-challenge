@@ -12,8 +12,12 @@ import {
 
 import { Container, Row } from './styles';
 
-const Day: React.FC = () => {
-  const monthStart = startOfMonth(new Date());
+interface DayProps {
+  currentDate: Date;
+}
+
+const Day: React.FC<DayProps> = ({ currentDate }) => {
+  const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
   const endDate = endOfWeek(monthEnd);
@@ -26,7 +30,7 @@ const Day: React.FC = () => {
     if (daysOfWeek.length > 0) daysOfWeek = [];
 
     for (let i = 0; i < 7; i++) {
-      const selected = isSameDay(day, new Date()) ? 'selected' : '';
+      const selected = isSameDay(day, currentDate) ? 'selected' : '';
       const disabled = !isSameMonth(day, monthStart) ? 'disabled' : '';
 
       daysOfWeek.push(

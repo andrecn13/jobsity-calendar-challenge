@@ -1,19 +1,32 @@
 import React from 'react';
+import { format } from 'date-fns';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 
 import { Container } from './styles';
 
-const Topbar: React.FC = () => (
+interface TopbarProps {
+  currentDate: Date;
+  nextMonth(): void;
+  prevMonth(): void;
+}
+
+const Topbar: React.FC<TopbarProps> = ({
+  currentDate,
+  nextMonth,
+  prevMonth,
+}) => (
   <Container>
-    <button type="button">
-      <FiArrowLeft />
-    </button>
     <div>
-      <strong>Maio, 2020</strong>
+      <strong>{format(currentDate, 'MMMM yyyy')}</strong>
     </div>
-    <button type="button">
-      <FiArrowRight />
-    </button>
+    <div>
+      <button type="button" onClick={prevMonth}>
+        <FiArrowLeft />
+      </button>
+      <button type="button" onClick={nextMonth}>
+        <FiArrowRight />
+      </button>
+    </div>
   </Container>
 );
 
