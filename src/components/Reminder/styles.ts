@@ -9,6 +9,13 @@ export const Container = styled.div`
   form {
     width: 70%;
 
+    .github-picker {
+      span div span {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
     > div {
       display: flex;
       flex-direction: column;

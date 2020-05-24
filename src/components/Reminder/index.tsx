@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useRef } from 'react';
+import * as Yup from 'yup';
 import { Modal } from 'semantic-ui-react';
 import { Form } from '@unform/web';
-import { setHours, setMinutes, getHours, getMinutes, format } from 'date-fns';
+import { setHours, setMinutes, format } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
+import { GithubPicker } from 'react-color';
 
 import Input from '../Input';
 
@@ -30,26 +32,53 @@ const Reminder: React.FC = () => {
     setSelectedReminder,
   } = useContext(CalendarContext);
 
-  function handleSubmit(data: Reminder) {
-    let time = new Date(data.time);
-    time = setHours(time, data.hours);
-    time = setMinutes(time, data.minutes);
+  const [color, setColor] = useState('#1f1deb');
+  const formRef = useRef<any>(null);
 
-    const reminder = { ...data, time };
+  function handleChangeColor(newColor: any) {
+    setColor(newColor.hex);
+  }
 
-    if (data.id) {
-      const index = reminders.findIndex((r: Reminder) => r.id === data.id);
+  async function handleSubmit(data: Reminder) {
+    try {
+      // Remove all previous errors
+      formRef.current.setErrors({});
 
-      if (index > -1) {
-        reminders[index] = { ...reminder };
-        setReminders([...reminders]);
+      const schema = Yup.object().shape({
+        title: Yup.string().max(30, 'Max 30 characters').required(),
+      });
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      let time = new Date(data.time);
+      time = setHours(time, data.hours);
+      time = setMinutes(time, data.minutes);
+
+      const reminder = { ...data, time, color };
+
+      if (data.id) {
+        const index = reminders.findIndex((r: Reminder) => r.id === data.id);
+
+        if (index > -1) {
+          reminders[index] = { ...reminder };
+          setReminders([...reminders]);
+        }
+      } else {
+        reminder.id = uuidv4();
+        setReminders([...reminders, reminder]);
       }
-    } else {
-      reminder.id = uuidv4();
-      setReminders([...reminders, reminder]);
-    }
 
-    setModalOpen(false);
+      setModalOpen(false);
+    } catch (err) {
+      const validationErrors: any = {};
+      if (err instanceof Yup.ValidationError) {
+        err.inner.forEach((error) => {
+          validationErrors[error.path] = error.message;
+        });
+        formRef.current.setErrors(validationErrors);
+      }
+    }
   }
 
   function handleCloseModal() {
@@ -67,7 +96,7 @@ const Reminder: React.FC = () => {
       </Modal.Header>
       <Modal.Content>
         <Container>
-          <Form onSubmit={handleSubmit} initialData={initialData}>
+          <Form ref={formRef} onSubmit={handleSubmit} initialData={initialData}>
             <div>
               <span>Title</span>
               <Input name="title" type="text" />
@@ -75,12 +104,18 @@ const Reminder: React.FC = () => {
             <div>
               <span>Hour</span>
               <div>
-                <Input name="hours" type="text" />
+                <Input name="hours" type="text" maxlength="2" />
                 :
                 <Input name="minutes" type="text" />
               </div>
             </div>
-
+            <div>
+              <span>Color</span>
+              <GithubPicker
+                color={color}
+                onChangeComplete={handleChangeColor}
+              />
+            </div>
             <div>
               <span>City</span>
               <Input name="city" type="text" />

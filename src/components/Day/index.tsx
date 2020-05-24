@@ -20,6 +20,8 @@ interface Reminder {
   id: string;
   title: string;
   time: Date;
+  color: string;
+  city: string;
 }
 const Day: React.FC = () => {
   const {
@@ -87,8 +89,9 @@ const Day: React.FC = () => {
             <Event
               key={reminder.time.getTime() + index}
               onClick={() => handleEditReminder(reminder)}
+              color={reminder.color}
             >
-              {reminder.title}-{reminder.time.getTime()}
+              {reminder.title} ({format(reminder.time, 'HH : mm')})
             </Event>
           ))}
         </div>,

@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { shade } from 'polished';
+import styled, { css } from 'styled-components';
+import { shade, readableColor } from 'polished';
 
 export const Container = styled.div`
   background-color: #fff;
@@ -52,8 +52,10 @@ export const Label = styled.span`
   }
 `;
 
+interface EventProps {
+  color: string;
+}
 export const Event = styled.span`
-  background-color: red;
   display: block;
   padding: 2px 16px 2px 2px;
   color: white;
@@ -62,6 +64,9 @@ export const Event = styled.span`
   font-size: 0.85em;
   cursor: pointer;
   margin-bottom: 5px;
+
+  background-color: ${(props) => props.color};
+  color: ${(props) => readableColor(props.color || '#1f1deb')};
 `;
 
 export const Action = styled.span`
