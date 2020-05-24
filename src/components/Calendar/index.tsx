@@ -1,30 +1,17 @@
-import React, { useState } from 'react';
-import { subMonths, addMonths } from 'date-fns';
+import React from 'react';
 
 import Topbar from '../Topbar';
 import Header from '../Header';
 import Day from '../Day';
+import Reminder from '../Reminder';
 
 const Calendar: React.FC = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-
-  const handleMonthForward = () => {
-    setCurrentDate(addMonths(currentDate, 1));
-  };
-
-  const handleMonthBackward = () => {
-    setCurrentDate(subMonths(currentDate, 1));
-  };
-
   return (
     <>
-      <Topbar
-        currentDate={currentDate}
-        nextMonth={handleMonthForward}
-        prevMonth={handleMonthBackward}
-      />
+      <Reminder />
+      <Topbar />
       <Header />
-      <Day currentDate={currentDate} />
+      <Day />
     </>
   );
 };

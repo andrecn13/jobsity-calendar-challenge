@@ -18,6 +18,16 @@ export const Container = styled.div`
     justify-content: center;
     align-items: center;
 
+    &:first-child {
+      border-radius: 4px;
+      font-size: 0.9em;
+      font-weight: 700;
+
+      svg {
+        margin-right: 6px;
+      }
+    }
+
     & + button {
       margin-left: 10px;
     }
