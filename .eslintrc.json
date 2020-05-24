@@ -24,11 +24,14 @@
   },
   "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
   "rules": {
+    "jsx-a11y/click-events-have-key-events": "off",
     "no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
     "prettier/prettier": "error",
     "react-hooks/rules-of-hooks": "error",
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "react/no-array-index-key": "off",
     "react-hooks/exhaustive-deps": "warn",
     "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
     "import/prefer-default-export": "off",
@@ -37,7 +40,8 @@
       "ignorePackages",
       {
         "ts": "never",
-        "tsx": "never"
+        "tsx": "never",
+        "js": "never"
       }
     ]
   },
