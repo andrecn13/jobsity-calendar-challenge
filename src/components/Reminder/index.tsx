@@ -2,7 +2,7 @@ import React, { useContext, useState, useRef } from 'react';
 import * as Yup from 'yup';
 import { Modal } from 'semantic-ui-react';
 import { Form } from '@unform/web';
-import { setHours, setMinutes, format } from 'date-fns';
+import { setHours, setMinutes, format, max } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 import { GithubPicker } from 'react-color';
 
@@ -39,6 +39,28 @@ const Reminder: React.FC = () => {
     setColor(newColor.hex);
   }
 
+  function saveReminder(data: Reminder) {
+    let time = new Date(data.time);
+    time = setHours(time, data.hours);
+    time = setMinutes(time, data.minutes);
+
+    const reminder = { ...data, time, color };
+
+    if (data.id) {
+      const index = reminders.findIndex((r: Reminder) => r.id === data.id);
+
+      if (index > -1) {
+        reminders[index] = { ...reminder };
+        setReminders([...reminders]);
+      }
+    } else {
+      reminder.id = uuidv4();
+      setReminders([...reminders, reminder]);
+    }
+
+    setModalOpen(false);
+  }
+
   async function handleSubmit(data: Reminder) {
     try {
       // Remove all previous errors
@@ -46,30 +68,16 @@ const Reminder: React.FC = () => {
 
       const schema = Yup.object().shape({
         title: Yup.string().max(30, 'Max 30 characters').required(),
+        city: Yup.string().required(),
+        hours: Yup.string().max(2).required(),
+        minutes: Yup.string().max(2).required(),
       });
       await schema.validate(data, {
         abortEarly: false,
       });
 
-      let time = new Date(data.time);
-      time = setHours(time, data.hours);
-      time = setMinutes(time, data.minutes);
-
-      const reminder = { ...data, time, color };
-
-      if (data.id) {
-        const index = reminders.findIndex((r: Reminder) => r.id === data.id);
-
-        if (index > -1) {
-          reminders[index] = { ...reminder };
-          setReminders([...reminders]);
-        }
-      } else {
-        reminder.id = uuidv4();
-        setReminders([...reminders, reminder]);
-      }
-
-      setModalOpen(false);
+      // Save or Update a reminder
+      saveReminder(data);
     } catch (err) {
       const validationErrors: any = {};
       if (err instanceof Yup.ValidationError) {

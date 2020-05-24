@@ -39,6 +39,10 @@ export const Container = styled.div`
         font-weight: 300;
         padding: 8px 12px;
         border-radius: 4px;
+
+        &.has-error {
+          border: 1px solid #dd1313;
+        }
       }
     }
 
