@@ -59,3 +59,7 @@ export const Container = styled.div`
     }
   }
 `;
+
+export const Forecast = styled.pre`
+  margin-top: 10px;
+`;

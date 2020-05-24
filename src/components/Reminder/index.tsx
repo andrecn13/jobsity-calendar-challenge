@@ -1,17 +1,23 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import * as Yup from 'yup';
 import { Modal } from 'semantic-ui-react';
 import { Form } from '@unform/web';
-import { setHours, setMinutes, format, max } from 'date-fns';
+import { setHours, setMinutes, format } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 import { GithubPicker } from 'react-color';
 
 import Input from '../Input';
+import api from '../../services/weather';
 
 import { CalendarContext } from '../../context/CalendarContext';
 
-import { Container } from './styles';
+import { Container, Forecast } from './styles';
 
+interface Forecast {
+  id: number;
+  main: string;
+  description: string;
+}
 interface Reminder {
   id: string;
   title: string;
@@ -20,6 +26,7 @@ interface Reminder {
   color: string;
   hours: number;
   minutes: number;
+  weather: Forecast[];
 }
 const Reminder: React.FC = () => {
   const {
@@ -32,19 +39,32 @@ const Reminder: React.FC = () => {
     setSelectedReminder,
   } = useContext(CalendarContext);
 
-  const [color, setColor] = useState('#1f1deb');
   const formRef = useRef<any>(null);
+
+  const [color, setColor] = useState('#1f1deb');
+  const [city, setCity] = useState<string>('');
+  const [weather, setWeather] = useState<Forecast[]>([]);
+
+  useEffect(() => {
+    if (city.length > 2) {
+      api
+        .getForecastForCityAndDate(city, selectedDate.getTime() / 1000)
+        .then(({ data }) => {
+          setWeather(data.weather);
+        });
+    }
+  }, [city]);
 
   function handleChangeColor(newColor: any) {
     setColor(newColor.hex);
   }
 
-  function saveReminder(data: Reminder) {
+  function saveOrUpdateReminder(data: Reminder) {
     let time = new Date(data.time);
     time = setHours(time, data.hours);
     time = setMinutes(time, data.minutes);
 
-    const reminder = { ...data, time, color };
+    const reminder = { ...data, time, color, weather };
 
     if (data.id) {
       const index = reminders.findIndex((r: Reminder) => r.id === data.id);
@@ -58,6 +78,7 @@ const Reminder: React.FC = () => {
       setReminders([...reminders, reminder]);
     }
 
+    setWeather([]);
     setModalOpen(false);
   }
 
@@ -77,7 +98,7 @@ const Reminder: React.FC = () => {
       });
 
       // Save or Update a reminder
-      saveReminder(data);
+      saveOrUpdateReminder(data);
     } catch (err) {
       const validationErrors: any = {};
       if (err instanceof Yup.ValidationError) {
@@ -89,7 +110,12 @@ const Reminder: React.FC = () => {
     }
   }
 
+  function handleChangeCity(e: React.ChangeEvent<HTMLInputElement>) {
+    setCity(e.target.value);
+  }
+
   function handleCloseModal() {
+    setWeather([]);
     setModalOpen(false);
     setSelectedReminder(null);
   }
@@ -112,7 +138,7 @@ const Reminder: React.FC = () => {
             <div>
               <span>Hour</span>
               <div>
-                <Input name="hours" type="text" maxlength="2" />
+                <Input name="hours" type="text" maxLength="2" />
                 :
                 <Input name="minutes" type="text" />
               </div>
@@ -126,7 +152,13 @@ const Reminder: React.FC = () => {
             </div>
             <div>
               <span>City</span>
-              <Input name="city" type="text" />
+              <Input name="city" type="text" onChange={handleChangeCity} />
+
+              {weather.map(({ id, main }) => (
+                <Forecast key={id}>
+                  The weather forecast for the day is <strong>{main}</strong>
+                </Forecast>
+              ))}
             </div>
 
             <Input name="time" type="hidden" />

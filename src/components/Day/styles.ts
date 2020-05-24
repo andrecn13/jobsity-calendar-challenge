@@ -24,7 +24,8 @@ export const Row = styled.div`
     &:hover {
       background-color: ${shade(0.05, '#FFF')};
 
-      .add-reminder {
+      .add-reminder,
+      .clear-reminder {
         opacity: 1;
       }
     }
@@ -79,6 +80,10 @@ export const Action = styled.span`
   cursor: pointer;
 
   transition: opacity 0.2s;
+
+  & + span {
+    bottom: 35px;
+  }
 
   svg {
     color: #1f1deb;

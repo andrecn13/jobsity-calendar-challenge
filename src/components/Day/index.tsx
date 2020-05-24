@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { FiPlusCircle } from 'react-icons/fi';
+import { FiPlusCircle, FiTrash2 } from 'react-icons/fi';
 import {
   startOfWeek,
   endOfWeek,
@@ -29,12 +29,21 @@ const Day: React.FC = () => {
     setSelectedDate,
     setModalOpen,
     reminders,
+    setReminders,
     setSelectedReminder,
   } = useContext(CalendarContext);
 
   function handleSelectedDay(day: Date) {
     setSelectedDate(day);
     setModalOpen(true);
+  }
+
+  function handleClearAll(day: Date) {
+    const remindersFiltered = reminders.filter(
+      (reminder: Reminder) => !isSameDay(day, reminder.time),
+    );
+
+    setReminders([...remindersFiltered]);
   }
 
   function handleEditReminder(reminder: Reminder) {
@@ -84,6 +93,14 @@ const Day: React.FC = () => {
           >
             <FiPlusCircle />
           </Action>
+          {filterRemindersOfDay(day).length > 0 && (
+            <Action
+              className="clear-reminder"
+              onClick={() => handleClearAll(clone)}
+            >
+              <FiTrash2 />
+            </Action>
+          )}
 
           {filterRemindersOfDay(day).map((reminder, index) => (
             <Event
