@@ -6,7 +6,7 @@ export const getForecastForCityAndDate = (
   date: number,
 ): Promise<AxiosResponse> =>
   api.get(
-    `weather?q=${city}&cnt=1&dt=${date}&appid=886268d885e2614466725dcf8b9589c5`,
+    `weather?q=${city}&cnt=1&dt=${date}&appid=efa34da9941e58576464d6fa76c0e999`,
   );
 
 export default { getForecastForCityAndDate };
